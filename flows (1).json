@@ -1,0 +1,881 @@
+[
+    {
+        "id": "2724c09f2d6a4f7f",
+        "type": "tab",
+        "label": "Fluxo 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "88b8e4b21c4a64d8",
+        "type": "mqtt-broker",
+        "name": "Broker-Mosquitto",
+        "broker": "localhost",
+        "port": 1883,
+        "clientid": "nodered_server",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "79284f30bdbaadb4",
+        "type": "MySQLdatabase",
+        "name": "MySQL_MQTT",
+        "host": "localhost",
+        "port": "3306",
+        "db": "iot_db",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "167dbdd8e0481d7f",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-light",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#0094CE",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "darkTheme": {
+                "default": "#097479",
+                "baseColor": "#097479",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": false
+            },
+            "customTheme": {
+                "name": "Untitled Theme 1",
+                "default": "#4B7930",
+                "baseColor": "#4B7930",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#0094CE",
+                    "value": "#0094CE",
+                    "edited": false
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#0094CE",
+                    "edited": false
+                },
+                "page-backgroundColor": {
+                    "value": "#fafafa",
+                    "edited": false
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "group-textColor": {
+                    "value": "#1bbfff",
+                    "edited": false
+                },
+                "group-borderColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "group-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "widget-textColor": {
+                    "value": "#111111",
+                    "edited": false
+                },
+                "widget-backgroundColor": {
+                    "value": "#0094ce",
+                    "edited": false
+                },
+                "widget-borderColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "base-font": {
+                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+                }
+            },
+            "angularTheme": {
+                "primary": "indigo",
+                "accents": "blue",
+                "warn": "red",
+                "background": "grey",
+                "palette": "light"
+            }
+        },
+        "site": {
+            "name": "Node-RED Dashboard",
+            "hideToolbar": "false",
+            "allowSwipe": "false",
+            "lockMenu": "false",
+            "allowTempTheme": "true",
+            "dateFormat": "DD/MM/YYYY",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 6,
+                "cy": 6,
+                "px": 0,
+                "py": 0
+            }
+        }
+    },
+    {
+        "id": "1fe167afb8d39eec",
+        "type": "ui-base",
+        "name": "Dashboard",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": false
+    },
+    {
+        "id": "8234e42524b38f7b",
+        "type": "ui-theme",
+        "name": "Default Theme",
+        "colors": {
+            "surface": "#ffffff",
+            "primary": "#0094CE",
+            "bgPage": "#eeeeee",
+            "groupBg": "#ffffff",
+            "groupOutline": "#cccccc"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "12px",
+            "groupGap": "12px",
+            "groupBorderRadius": "4px",
+            "widgetGap": "12px"
+        }
+    },
+    {
+        "id": "c8b5dcdde5160d1a",
+        "type": "ui-page",
+        "name": "PAINEL-IOT",
+        "ui": "1fe167afb8d39eec",
+        "path": "/iot",
+        "icon": "gauge",
+        "layout": "grid",
+        "theme": "8234e42524b38f7b",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 2,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "120fc038a291a3ef",
+        "type": "ui-group",
+        "name": "CAMARA-FRIA",
+        "page": "c8b5dcdde5160d1a",
+        "width": "6",
+        "height": 1,
+        "order": 1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "980f7a0fd985dc01",
+        "type": "ui-page",
+        "name": "HOME",
+        "ui": "1fe167afb8d39eec",
+        "path": "/home",
+        "icon": "home",
+        "layout": "grid",
+        "theme": "8234e42524b38f7b",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 1,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "9e0b8fbf952d4168",
+        "type": "ui-page",
+        "name": "HISTÓRICO",
+        "ui": "1fe167afb8d39eec",
+        "path": "/pims",
+        "icon": "history",
+        "layout": "grid",
+        "theme": "8234e42524b38f7b",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 3,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "9ee50ba7de712183",
+        "type": "ui-group",
+        "name": "Historico",
+        "page": "9e0b8fbf952d4168",
+        "width": "6",
+        "height": 1,
+        "order": 1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "2e827182e4cf25a5",
+        "type": "mqtt in",
+        "z": "2724c09f2d6a4f7f",
+        "name": "",
+        "topic": "esp32/dados",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "88b8e4b21c4a64d8",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 170,
+        "y": 260,
+        "wires": [
+            [
+                "e01fb1b33435ea68",
+                "72fcec02e74fe46c",
+                "64e0155c950e6ad1",
+                "9251a8ef1362d4ca"
+            ]
+        ]
+    },
+    {
+        "id": "e01fb1b33435ea68",
+        "type": "function",
+        "z": "2724c09f2d6a4f7f",
+        "name": "function 1",
+        "func": "// 1. Garante que o texto seja convertido em um Objeto de verdade\nvar dados = typeof msg.payload === \"string\" ? JSON.parse(msg.payload) : msg.payload;\n\n// 2. Extrai os valores que vieram do seu ESP32\nvar dev_id = dados.device_id;\nvar temp = dados.temperatura;\nvar umi = dados.umidade;\nvar stat = dados.status;\n\n// 3. Monta o Array (lista) na ordem exata que o MySQL espera\nmsg.payload = [dev_id, temp, umi, stat];\n\n// 4. Monta o comando SQL (Substitua \"nome_da_sua_tabela\" pelo nome real que você criou no MySQL)\nmsg.topic = \"INSERT INTO sensor_data (device_id, temperatura, umidade, status) VALUES (?, ?, ?, ?)\";\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 60,
+        "wires": [
+            [
+                "d9b614d6f0852caa"
+            ]
+        ]
+    },
+    {
+        "id": "d9b614d6f0852caa",
+        "type": "mysql",
+        "z": "2724c09f2d6a4f7f",
+        "mydb": "79284f30bdbaadb4",
+        "name": "mysql",
+        "x": 910,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "72fcec02e74fe46c",
+        "type": "change",
+        "z": "2724c09f2d6a4f7f",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.temperatura",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 540,
+        "y": 160,
+        "wires": [
+            [
+                "a80b2459ee83c001"
+            ]
+        ]
+    },
+    {
+        "id": "64e0155c950e6ad1",
+        "type": "change",
+        "z": "2724c09f2d6a4f7f",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.umidade",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 540,
+        "y": 220,
+        "wires": [
+            [
+                "497ec85d4efd9d0d"
+            ]
+        ]
+    },
+    {
+        "id": "9251a8ef1362d4ca",
+        "type": "function",
+        "z": "2724c09f2d6a4f7f",
+        "name": "function 2",
+        "func": "// Verifica o valor do status dentro do JSON que chegou\nif (msg.payload.status == 1) {\n    msg.payload = \"LIGADO 🟢\";\n} else {\n    msg.payload = \"DESLIGADO 🔴\";\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 320,
+        "wires": [
+            [
+                "478af285cc497f9d"
+            ]
+        ]
+    },
+    {
+        "id": "497ec85d4efd9d0d",
+        "type": "ui-gauge",
+        "z": "2724c09f2d6a4f7f",
+        "name": "Umidade",
+        "group": "120fc038a291a3ef",
+        "order": 2,
+        "value": "payload",
+        "valueType": "msg",
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "needle",
+        "title": "Umidade:",
+        "alwaysShowTitle": false,
+        "floatingTitlePosition": "top-left",
+        "units": "%",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#ffc800",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "60",
+                "color": "#5cd65c",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "70",
+                "color": "#ea5353",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "100",
+                "color": "#ea5353",
+                "text": "",
+                "textType": "label"
+            }
+        ],
+        "min": 0,
+        "max": "100",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 800,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a80b2459ee83c001",
+        "type": "ui-gauge",
+        "z": "2724c09f2d6a4f7f",
+        "name": "Temperatura",
+        "group": "120fc038a291a3ef",
+        "order": 1,
+        "value": "payload",
+        "valueType": "msg",
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "needle",
+        "title": "Temperatura:",
+        "alwaysShowTitle": false,
+        "floatingTitlePosition": "top-left",
+        "units": "ºC",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "-50",
+                "color": "#ffc800",
+                "text": "ºC Baixíssima",
+                "textType": "str"
+            },
+            {
+                "from": "-25",
+                "color": "#5cd65c",
+                "text": "ºC Ideal",
+                "textType": "str"
+            },
+            {
+                "from": "25",
+                "color": "#ea5353",
+                "text": "ºC Altíssima",
+                "textType": "str"
+            },
+            {
+                "from": "50",
+                "color": "#ea5353",
+                "text": "ºC Altíssima",
+                "textType": "str"
+            }
+        ],
+        "min": "-50.0",
+        "max": "50.0",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 810,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "478af285cc497f9d",
+        "type": "ui-text",
+        "z": "2724c09f2d6a4f7f",
+        "group": "120fc038a291a3ef",
+        "order": 3,
+        "width": "6",
+        "height": "1",
+        "name": "Ventilador",
+        "label": "Ventilador: ",
+        "format": "{{msg.payload}}",
+        "layout": "row-center",
+        "style": true,
+        "font": "Verdana,Verdana,Geneva,sans-serif",
+        "fontSize": 16,
+        "color": "#717171",
+        "wrapText": false,
+        "className": "",
+        "value": "payload",
+        "valueType": "msg",
+        "x": 800,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "797ba1f1cfc5ddf8",
+        "type": "inject",
+        "z": "2724c09f2d6a4f7f",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 170,
+        "y": 420,
+        "wires": [
+            [
+                "41dddbb33560bf73"
+            ]
+        ]
+    },
+    {
+        "id": "41dddbb33560bf73",
+        "type": "function",
+        "z": "2724c09f2d6a4f7f",
+        "name": "function 3",
+        "func": "// Busca as últimas 20 leituras da tabela sensor_data\nmsg.topic = \"SELECT `temperatura`, `umidade`, `timestamp` FROM sensor_data ORDER BY id DESC LIMIT 20;\";\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 420,
+        "wires": [
+            [
+                "bb819cfb0fde8b92"
+            ]
+        ]
+    },
+    {
+        "id": "d9abc66c72b7b5f2",
+        "type": "function",
+        "z": "2724c09f2d6a4f7f",
+        "name": "function 4",
+        "func": "var registros = msg.payload;\n\n// 1. Escudo inicial\nif (!Array.isArray(registros)) {\n    return null; \n}\n\n// Inverte a lista para o tempo correto do gráfico\nregistros.reverse();\n\nvar mensagens = [];\n\n// O truque para limpar a tela e evitar os riscos cruzados\nmensagens.push({ payload: [] });\n\n// 💡 \"Memórias\" para guardar o último valor visto no loop\nvar ultimaTemp = null;\nvar ultimaUmid = null;\n\n// 2. Loop de verificação linha a linha\nfor (var i = 0; i < registros.length; i++) {\n    \n    if (registros[i] === null || !registros[i].timestamp) {\n        continue; \n    }\n\n    var tempoMs = new Date(registros[i].timestamp).getTime(); \n    \n    // 3. Filtro da Temperatura: Só desenha se não for nula E for DIFERENTE da última\n    if (registros[i].temperatura !== null && registros[i].temperatura !== ultimaTemp) {\n        mensagens.push({\n            topic: \"Temperatura\",\n            payload: registros[i].temperatura,\n            timestamp: tempoMs\n        });\n        ultimaTemp = registros[i].temperatura; // Atualiza a memória com o novo valor\n    }\n    \n    // 4. Filtro da Umidade: Só desenha se não for nula E for DIFERENTE da última\n    if (registros[i].umidade !== null && registros[i].umidade !== ultimaUmid) {\n        mensagens.push({\n            topic: \"Umidade\",\n            payload: registros[i].umidade,\n            timestamp: tempoMs\n        });\n        ultimaUmid = registros[i].umidade; // Atualiza a memória com o novo valor\n    }\n}\n\nreturn [mensagens];",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1120,
+        "y": 420,
+        "wires": [
+            [
+                "81ad8df15fe92750"
+            ]
+        ]
+    },
+    {
+        "id": "bb819cfb0fde8b92",
+        "type": "mysql",
+        "z": "2724c09f2d6a4f7f",
+        "mydb": "79284f30bdbaadb4",
+        "name": "dashboard",
+        "x": 930,
+        "y": 420,
+        "wires": [
+            [
+                "d9abc66c72b7b5f2"
+            ]
+        ]
+    },
+    {
+        "id": "81ad8df15fe92750",
+        "type": "ui-chart",
+        "z": "2724c09f2d6a4f7f",
+        "group": "9ee50ba7de712183",
+        "name": "Historico",
+        "label": "Histórico Câmara Fria",
+        "order": 1,
+        "chartType": "line",
+        "category": "topic",
+        "categoryType": "msg",
+        "xAxisLabel": "",
+        "xAxisProperty": "",
+        "xAxisPropertyType": "timestamp",
+        "xAxisType": "time",
+        "xAxisFormat": "",
+        "xAxisFormatType": "auto",
+        "xmin": "",
+        "xmax": "",
+        "yAxisLabel": "",
+        "yAxisProperty": "payload",
+        "yAxisPropertyType": "msg",
+        "ymin": "-50",
+        "ymax": "100",
+        "bins": 10,
+        "action": "append",
+        "stackSeries": false,
+        "pointShape": "star",
+        "pointRadius": 4,
+        "showLegend": true,
+        "removeOlder": "10",
+        "removeOlderUnit": "60",
+        "removeOlderPoints": "",
+        "colors": [
+            "#0095ff",
+            "#ff0000",
+            "#ff7f0e",
+            "#2ca02c",
+            "#a347e1",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "textColor": [
+            "#666666"
+        ],
+        "textColorDefault": true,
+        "gridColor": [
+            "#e5e5e5"
+        ],
+        "gridColorDefault": true,
+        "width": 6,
+        "height": 8,
+        "className": "",
+        "interpolation": "linear",
+        "x": 1300,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "390cdc3d569df632",
+        "type": "ui-switch",
+        "z": "2724c09f2d6a4f7f",
+        "name": "Botao",
+        "label": "Ventilador Liga / Desliga",
+        "group": "120fc038a291a3ef",
+        "order": 4,
+        "width": "4",
+        "height": "1",
+        "passthru": false,
+        "decouple": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "className": "",
+        "layout": "row-left",
+        "clickableArea": "switch",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "x": 350,
+        "y": 560,
+        "wires": [
+            [
+                "02d108615a5153a9"
+            ]
+        ]
+    },
+    {
+        "id": "02d108615a5153a9",
+        "type": "mqtt out",
+        "z": "2724c09f2d6a4f7f",
+        "name": "",
+        "topic": "esp32/comandos",
+        "qos": "1",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "88b8e4b21c4a64d8",
+        "x": 650,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "93e4aec7fda0c67f",
+        "type": "ui-slider",
+        "z": "2724c09f2d6a4f7f",
+        "group": "120fc038a291a3ef",
+        "name": "Slider",
+        "label": "SP Temperatura:",
+        "tooltip": "",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "outs": "end",
+        "topic": "topic",
+        "topicType": "msg",
+        "thumbLabel": "always",
+        "showTicks": "always",
+        "min": "-50",
+        "max": "50",
+        "step": 1,
+        "className": "",
+        "iconPrepend": "",
+        "iconAppend": "",
+        "color": "",
+        "colorTrack": "",
+        "colorThumb": "",
+        "showTextField": false,
+        "x": 350,
+        "y": 640,
+        "wires": [
+            [
+                "a926e4abfb68c39c"
+            ]
+        ]
+    },
+    {
+        "id": "a926e4abfb68c39c",
+        "type": "mqtt out",
+        "z": "2724c09f2d6a4f7f",
+        "name": "",
+        "topic": "esp32/setpoint",
+        "qos": "1",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "88b8e4b21c4a64d8",
+        "x": 640,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "2e7bc4b1386243dc",
+        "type": "ui-template",
+        "z": "2724c09f2d6a4f7f",
+        "group": "",
+        "page": "980f7a0fd985dc01",
+        "ui": "",
+        "name": "IFSP",
+        "order": 0,
+        "width": "12",
+        "height": "1",
+        "head": "",
+        "format": "<template>\n    <div style=\"text-align: center; padding: 40px; font-family: sans-serif; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);\">\n        \n        <img src=\"https://ctd.ifsp.edu.br/images/Logo_Campus/Marca_IFSP_2015-03.jpg\" \n             alt=\"IoT Logo\" \n             style=\"width: 100px; height: auto; margin-bottom: 20px;\">\n        \n        <h2 style=\"color: #1a237e; margin-bottom: 5px; font-weight: bold;\">Curso de Pós-graduação em IoT</h2>\n        <h3 style=\"color: #3949ab; font-weight: 400; margin-top: 0; margin-bottom: 25px;\">\n            Plataformas de Prototipação para Internet das Coisas\n        </h3>\n        \n        <hr style=\"width: 70%; border: 1px solid #eceff1; margin: 25px auto;\">\n        \n        <h2 style=\"color: #424242; margin-bottom: 30px; font-size: 22px;\">\n            Trabalho: Servidor em Nuvem, Apache, Node-RED, IoT\n        </h2>\n        \n        <div style=\"margin-top: 20px; font-size: 18px; color: #546e7a; line-height: 1.8;\">\n            <p style=\"margin: 8px 0;\"><b>Professor:</b> Marcos Aparecido Chaves Ferreira</p>\n            <p style=\"margin: 8px 0;\"><b>Aluno:</b> Moisés</p>\n        </div>\n        \n        <hr style=\"width: 70%; border: 1px solid #eceff1; margin: 35px auto;\">\n        \n        <p style=\"color: #90a4ae; font-size: 14px;\">\n            <i>Utilize o menu lateral para acessar o painel SCADA e os gráficos de histórico do sistema.</i>\n        </p>\n        \n    </div>\n</template>",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "widget:page",
+        "className": "",
+        "x": 910,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "782778cb1ded8fb3",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-node-mysql": "3.0.0",
+            "node-red-dashboard": "3.6.6",
+            "@flowfuse/node-red-dashboard": "1.30.2"
+        }
+    }
+]
