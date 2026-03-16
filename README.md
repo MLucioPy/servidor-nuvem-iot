@@ -52,8 +52,6 @@ O dashboard foi desenvolvido utilizando **Node-RED Dashboard 2.0**, permitindo a
 ### Banco de Dados
 - MySQL
 
-Implementado utilizando a técnica **Report by Exception**, que otimiza o armazenamento e melhora a visualização de gráficos históricos.
-
 ---
 
 # 📁 Estrutura do Repositório
@@ -81,6 +79,7 @@ Imagens do dashboard, diagramas da arquitetura e prints do banco de dados.
 - Ajuste remoto de **Set-Point de temperatura**
 - Interface SCADA com **navegação multi-páginas**
 - Sistema hospedado em **servidor em nuvem**
+- Controle via PID
 
 ---
 
