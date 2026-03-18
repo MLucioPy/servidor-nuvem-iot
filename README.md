@@ -28,6 +28,10 @@ Interface gráfica para monitoramento e controle do sistema:
 
 https://gaf-iot.duckdns.org/dashboard/home
 
+user: ifsp
+
+pass: ifspct
+
 O dashboard foi desenvolvido utilizando **Node-RED Dashboard 2.0**, permitindo acesso remoto através de navegador web.
 
 ---
