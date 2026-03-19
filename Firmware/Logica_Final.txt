@@ -1,0 +1,379 @@
+#include <WiFi.h>
+#include <PubSubClient.h>
+#include <DHT.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#include <ArduinoJson.h>
+
+// --- CREDENCIAIS ---
+const char* ssid = "S23_Moises";
+const char* password = "maria2108";
+const char* mqtt_server = "3.137.8.121";
+const int   mqtt_port = 1883;
+const char* mqtt_user = "iotuser"; 
+const char* mqtt_pass = "IfspC4tanduv@";
+
+// --- PINOS ---
+#define DHTPIN 4
+#define OLED_SDA 18 
+#define OLED_SCL 17
+#define PINO_LED_MOTOR 5         
+#define PINO_LED_MODO 6          
+#define PINO_LED_LOCAL_REMOTO 7  
+#define PINO_BOTAO_TOUCH 15      
+#define PINO_SERVO 10            
+
+// --- CONFIGURAÇÃO DO SERVO ---
+const int freqServo = 50;       
+const int resolucaoServo = 14;  
+
+// --- OBJETOS E VARIÁVEIS ---
+DHT dht(DHTPIN, DHT11);
+WiFiClient espClient;
+PubSubClient client(espClient);
+Adafruit_SSD1306 display(128, 64, &Wire, -1);
+
+unsigned long tempoUltimaLeitura = 0; 
+unsigned long ultimoEnvioMQTT = 0;    
+unsigned long tempoMotor = 0; 
+
+float temperatura = 0.0, umidade = 0.0;
+float cv = 0.0;             
+float cv_motor = 0.0;       
+float setpoint = 25.0;      
+
+bool status = false;       
+bool modoAuto = false;     
+bool modoRemoto = true;    
+bool estadoBotaoAnterior = LOW; 
+
+int estadoCabecalho = 0; 
+int ultimoDutyCycle = -1; 
+
+// --- VARIÁVEIS DO PID ---
+float Kp = 5.0;  
+float Ki = 0.5;  
+float Kd = 1.0;  
+float erroAnterior = 0.0;
+float integral = 0.0;
+unsigned long tempoPID = 0;
+
+// -----------------------------------------------------------------
+// ATUALIZA OS LEDS FÍSICOS
+// -----------------------------------------------------------------
+void atualizaLEDs() {
+  digitalWrite(PINO_LED_MOTOR, status ? HIGH : LOW);
+  digitalWrite(PINO_LED_MODO, modoAuto ? HIGH : LOW);
+  digitalWrite(PINO_LED_LOCAL_REMOTO, modoRemoto ? HIGH : LOW);
+}
+
+// -----------------------------------------------------------------
+// CALLBACK: RECEBENDO COMANDOS E INTERTRAVAMENTO
+// -----------------------------------------------------------------
+void callback(char* topic, byte* payload, unsigned int length) {
+  String msg = "";
+  for (int i = 0; i < length; i++) {
+    msg += (char)payload[i];
+  }
+  
+  msg.trim(); 
+  String msgLower = msg;
+  msgLower.toLowerCase(); 
+  String topicoRecebido = String(topic);
+
+  bool forcarTela = false; 
+
+  if (topicoRecebido == "esp32/local_remoto") {
+    if (msgLower == "remoto" || msgLower == "1" || msgLower == "true") {
+      modoRemoto = true;
+    } 
+    else if (msgLower == "local" || msgLower == "0" || msgLower == "false") {
+      modoRemoto = false;
+    }
+    forcarTela = true;
+  }
+
+  // Trava principal: só aceita se a chave for REMOTO
+  if (modoRemoto) {
+    if (topicoRecebido == "esp32/comandos") {
+      if (msgLower == "1" || msgLower == "true" || msgLower == "on" || msgLower == "liga") {
+        status = true;
+      } 
+      else if (msgLower == "0" || msgLower == "false" || msgLower == "off" || msgLower == "desliga") {
+        status = false;
+      }
+      forcarTela = true; 
+    } 
+    else if (topicoRecebido == "esp32/modo") {
+      if (msgLower == "0" || msgLower == "false" || msgLower == "auto") {
+        modoAuto = true;
+      } 
+      else if (msgLower == "1" || msgLower == "true" || msgLower == "manual") {
+        modoAuto = false;
+      }
+      forcarTela = true;
+    } 
+    else if (topicoRecebido == "esp32/setpoint") {
+      float valorSP = msg.toFloat();
+      if (valorSP >= -50.0 && valorSP <= 50.0) {
+        setpoint = valorSP;
+      }
+    }
+    else if (topicoRecebido == "esp32/cv") {
+      if (!modoAuto) { 
+        cv = msg.toFloat(); 
+      }
+    }
+  }
+
+  atualizaLEDs();
+  if (forcarTela) tempoUltimaLeitura = 0; 
+}
+
+void setup() {
+  Serial.begin(115200);
+  
+  pinMode(PINO_LED_MOTOR, OUTPUT);
+  pinMode(PINO_LED_MODO, OUTPUT);
+  pinMode(PINO_LED_LOCAL_REMOTO, OUTPUT);
+  pinMode(PINO_BOTAO_TOUCH, INPUT); 
+  atualizaLEDs(); 
+  
+  ledcAttach(PINO_SERVO, freqServo, resolucaoServo); 
+  
+  Wire.begin(OLED_SDA, OLED_SCL);
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+  
+  // TELA INICIAL
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(30, 30); 
+  display.println("PROJETO IOT");
+  display.display();
+  delay(3000); 
+
+  display.clearDisplay();
+  display.setCursor(0, 0);
+  display.println("WIFI CONECTANDO...");
+  display.display();
+
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) { delay(500); }
+
+  display.println("WIFI CONECTADO!");
+  display.print("IP: ");
+  display.println(WiFi.localIP());
+  display.display();
+  delay(3000); 
+
+  display.println("MQTT CONECTANDO...");
+  display.display();
+
+  client.setServer(mqtt_server, mqtt_port);
+  client.setCallback(callback); 
+
+  if (client.connect("ESP32S3_Moises", mqtt_user, mqtt_pass)) {
+    display.println("MQTT NA AWS OK!");
+    display.display();
+    client.subscribe("esp32/comandos");
+    client.subscribe("esp32/modo");
+    client.subscribe("esp32/local_remoto");
+    client.subscribe("esp32/setpoint"); 
+    client.subscribe("esp32/cv");       
+  }
+  
+  delay(3000); 
+  dht.begin();
+}
+
+void reconectar() {
+  while (!client.connected()) {
+    if (client.connect("ESP32S3_Moises", mqtt_user, mqtt_pass)) {
+      client.subscribe("esp32/comandos");
+      client.subscribe("esp32/modo");
+      client.subscribe("esp32/local_remoto");
+      client.subscribe("esp32/setpoint");
+      client.subscribe("esp32/cv");
+    } else {
+      delay(3000);
+    }
+  }
+}
+
+void loop() {
+  if (!client.connected()) reconectar();
+  client.loop(); 
+
+  // -----------------------------------------------------------------
+  // MALHA DE CONTROLE PID (1 SEGUNDO DE CICLO)
+  // -----------------------------------------------------------------
+  if (millis() - tempoPID >= 1000) {
+    if (modoAuto && status && !isnan(temperatura)) {
+      
+      float erro = temperatura - setpoint;
+
+      float P = Kp * erro;
+      
+      integral += (Ki * erro * 1.0); 
+
+      if (integral > 100.0) integral = 100.0;
+      if (integral < 0.0)   integral = 0.0;
+
+      float D = Kd * (erro - erroAnterior) / 1.0;
+
+      cv = P + integral + D;
+
+      if (cv > 100.0) cv = 100.0;
+      if (cv < 0.0)   cv = 0.0;
+
+      erroAnterior = erro;
+    } 
+    else {
+      integral = cv; 
+      erroAnterior = 0.0;
+    }
+    
+    tempoPID = millis();
+  }
+
+  // -----------------------------------------------------------------
+  // CONTROLE DO SERVO (INTERTRAVAMENTO + RAMPA LINEAR)
+  // -----------------------------------------------------------------
+  if (millis() - tempoMotor >= 15) { 
+    
+    float alvo_fisico = status ? cv : 0.0;
+    
+    float erroMotor = alvo_fisico - cv_motor;
+    
+    if (abs(erroMotor) > 0.1) { 
+      if (erroMotor > 0) {
+        cv_motor += 0.5;
+        if (cv_motor > alvo_fisico) cv_motor = alvo_fisico; 
+      } else {
+        cv_motor -= 0.5;
+        if (cv_motor < alvo_fisico) cv_motor = alvo_fisico; 
+      }
+      
+      int dutyCycle = 410 + (int)((cv_motor / 100.0) * (2048 - 410)); 
+      
+      if (dutyCycle != ultimoDutyCycle) {
+        ledcWrite(PINO_SERVO, dutyCycle);
+        ultimoDutyCycle = dutyCycle;
+      }
+    }
+    tempoMotor = millis();
+  }
+
+  // --- BOTÃO TOUCH CAPACITIVO LOCAL ---
+  bool estadoBotaoAtual = digitalRead(PINO_BOTAO_TOUCH);
+  if (estadoBotaoAtual == HIGH && estadoBotaoAnterior == LOW) {
+    if (!modoRemoto) { 
+      status = !status; 
+      atualizaLEDs(); 
+      tempoUltimaLeitura = 0; 
+    }
+    delay(50); 
+  }
+  estadoBotaoAnterior = estadoBotaoAtual;
+
+  // -----------------------------------------------------------------
+  // DISPLAY OLED
+  // -----------------------------------------------------------------
+  if (millis() - tempoUltimaLeitura >= 4000) {
+    float h_temp = dht.readHumidity();
+    float t_temp = dht.readTemperature();
+
+    if (!isnan(h_temp) && !isnan(t_temp)) {
+      umidade = h_temp; temperatura = t_temp;
+    }
+
+    display.clearDisplay();
+    display.setTextColor(WHITE);
+    
+    estadoCabecalho++;
+    if (estadoCabecalho > 2) estadoCabecalho = 0; 
+
+    String textoTopo = "";
+    if (estadoCabecalho == 0) {
+      textoTopo = "--- MONITORAMENTO ---";
+    } else if (estadoCabecalho == 1) {
+      textoTopo = (WiFi.status() == WL_CONNECTED) ? "- WIFI: CONECTADO -" : "- WIFI: DESCONECTADO -";
+    } else if (estadoCabecalho == 2) {
+      textoTopo = client.connected() ? "- MQTT: CONECTADO -" : "- MQTT: FALHA -";
+    }
+
+    display.setTextSize(1);
+    int16_t x1, y1;
+    uint16_t w, h;
+    display.getTextBounds(textoTopo, 0, 0, &x1, &y1, &w, &h);
+    display.setCursor((128 - w) / 2, 0); 
+    display.print(textoTopo);
+    display.drawLine(0, 10, 128, 10, WHITE);
+
+    if (!isnan(temperatura) && !isnan(umidade)) {
+      display.setTextSize(1);
+      display.setCursor(0, 24); 
+      display.print("T:");
+      display.setTextSize(2);
+      display.setCursor(12, 18); 
+      display.print(temperatura, 1); 
+      display.setTextSize(1);
+      display.setCursor(62, 24);
+      display.print("C");
+
+      display.setCursor(72, 24); 
+      display.print("U:");
+      display.setTextSize(2);
+      display.setCursor(84, 18);
+      display.print((int)umidade); 
+      display.setTextSize(1);
+      display.setCursor(umidade >= 100 ? 120 : 108, 24);
+      display.print("%");
+
+      display.setCursor(0, 40); 
+      display.print("SP: "); display.print(setpoint, 1); display.print("C");
+      
+      display.setCursor(72, 40);
+      display.print("CV: "); display.print(cv, 0); display.print("%");
+
+      display.drawLine(0, 52, 128, 52, WHITE); 
+      display.setCursor(0, 56);
+      
+      display.print(status ? "MOT:ON " : "MOT:OFF");
+      display.print(" | ");
+      display.print(modoAuto ? "AUT" : "MAN");
+      display.print(" | ");
+      display.print(modoRemoto ? "REM" : "LOC");
+
+    } else {
+      display.setCursor(0, 30);
+      display.println("ERRO SENSOR DHT");
+    }
+    
+    display.display();
+    tempoUltimaLeitura = millis(); 
+  }
+
+  // -----------------------------------------------------------------
+  // ENVIO NODE-RED (A CADA 5 SEGUNDOS)
+  // -----------------------------------------------------------------
+  if (millis() - ultimoEnvioMQTT >= 5000) {
+    StaticJsonDocument<300> doc;
+    doc["device_id"] = "esp32_01";
+    doc["temperatura"] = temperatura;
+    doc["umidade"] = umidade;
+    doc["setpoint"] = setpoint;            
+    doc["cv"] = cv; 
+    doc["status"] = status ? 1 : 0; 
+    doc["modo"] = modoAuto ? 0 : 1;        
+    doc["controle"] = modoRemoto ? 1 : 0;  
+    
+    char payloadString[300];
+    serializeJson(doc, payloadString);
+    client.publish("esp32/dados", payloadString);
+    
+    ultimoEnvioMQTT = millis(); 
+  }
+}
