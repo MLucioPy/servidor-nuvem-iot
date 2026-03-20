@@ -60,18 +60,23 @@ O dashboard foi desenvolvido utilizando **Node-RED Dashboard 2.0**, permitindo a
 
 # 📁 Estrutura do Repositório
 
-/node-red  
+/Node_Red  
 Arquivos JSON contendo os fluxos exportados do Node-RED.
 
 ---
 
-/esp32  
+/Firmware  
 Código fonte em C++ para o microcontrolador ESP32.
 
 ---
 
-/docs  
+/Images  
 Imagens do dashboard, diagramas da arquitetura e prints do banco de dados.
+
+---
+
+/docs  
+Documentação detalhada do projeto em pdf.
 
 ---
 
